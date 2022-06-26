@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+spec:
+  selector:
+    matchLabels:
+      name: user-service
+  template:
+    metadata:
+      labels:
+        name: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: zalerix/kustomize-article-us:latest
+          livenessProbe:
+            httpGet:
+              port: 9000
+              path: /actuator/health/liveness
+          readinessProbe:
+            httpGet:
+              port: 9000
+              path: /actuator/health/readiness
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "256Mi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          ports:
+            - containerPort: 8080
+              name: app-port
+            - containerPort: 9000
+              name: actuator-port
+          envFrom:
+            - configMapRef:
+                name: us-config
+            - secretRef:
+                name: us-secrets

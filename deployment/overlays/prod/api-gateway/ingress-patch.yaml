@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-to-gateway
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /prod-gateway(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-url
+                port:
+                  number: 8080

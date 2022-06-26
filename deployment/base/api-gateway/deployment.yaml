@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+spec:
+  selector:
+    matchLabels:
+      name: api-gateway
+  template:
+    metadata:
+      labels:
+        name: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: zalerix/kustomize-article-gw:latest
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              port: 9000
+              path: /actuator/health/liveness
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              port: 9000
+              path: /actuator/health/readiness
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+          ports:
+            - containerPort: 8080
+              name: app-port
+            - containerPort: 9000
+              name: actuator-port
+          envFrom:
+            - configMapRef:
+                name: gateway-config

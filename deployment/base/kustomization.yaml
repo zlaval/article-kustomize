@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - api-gateway/deployment.yaml
+  - api-gateway/cluster-ip.yaml
+  - api-gateway/ingress.yaml
+  - api-gateway/hpa.yaml
+  - user-service/deployment.yaml
+  - user-service/cluster-ip.yaml
+  - user-service/hpa.yaml
+
+images:
+  - name: zalerix/kustomize-article-gw:latest
+    newName: zalerix/kustomize-article-gw
+    newTag: 1.0.1
+  - name: zalerix/kustomize-article-us:latest
+    newName: zalerix/kustomize-article-us
+    newTag: latest
